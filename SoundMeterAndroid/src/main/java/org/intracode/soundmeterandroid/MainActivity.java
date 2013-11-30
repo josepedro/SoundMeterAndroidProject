@@ -11,54 +11,128 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
-public class MainActivity extends ActionBarActivity {
+import android.widget.LinearLayout;
+import android.os.Bundle;
+import android.os.Environment;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.content.Context;
+import android.util.Log;
+import android.media.MediaRecorder;
+import android.media.MediaPlayer;
+
+import java.io.File;
+import java.io.IOException;
+
+
+import android.app.Activity;
+
+public class MainActivity extends Activity {
+    private MediaPlayer mediaPlayer;
+    private MediaRecorder recorder;
+    private String OUTPUT_FILE;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
+        OUTPUT_FILE=Environment.getExternalStorageDirectory()+"/audiorecorder.3gpp";
+    }
+    public void buttonTapped(View view){
+        switch(view.getId()){
+            case R.id.button1:
+                try {
+                    beginRecording();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.button2:
+                try {
+                    stopRecording();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.button3:
+                try {
+                    playRecording();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.button4:
+                try {
+                    stopPlaying();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
         }
     }
 
+    private void beginRecording() throws IOException {
+        ditchMediaRecorder();
+        File outFile = new File(OUTPUT_FILE);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
+        if (outFile.exists())
+        {
+            outFile.delete();
         }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
+        recorder = new MediaRecorder();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        recorder.setOutputFile(OUTPUT_FILE);
+
+        recorder.prepare();
+        recorder.start();
+    }
+
+    private void ditchMediaRecorder() {
+        if (recorder != null)
+        {
+            recorder.release();
+        }
+    }
+
+    private void stopRecording() {
+        if (recorder != null)
+        {
+            recorder.stop();
+        }
+    }
+
+    private void playRecording() throws IOException {
+        ditchMediaPlayer();
+        mediaPlayer=new MediaPlayer();
+        mediaPlayer.setDataSource(OUTPUT_FILE);
+        mediaPlayer.prepare();
+        mediaPlayer.start();
+    }
+
+    private void ditchMediaPlayer() {
+        if (mediaPlayer != null)
+        {
+            try
+            {
+                mediaPlayer.release();
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void stopPlaying() {
+        if (mediaPlayer != null)
+        {
+            mediaPlayer.stop();
         }
     }
 
