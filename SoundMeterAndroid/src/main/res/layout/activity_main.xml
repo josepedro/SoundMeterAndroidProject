@@ -1,45 +1,58 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity"
-    tools:ignore="MergeRootFrame" >
+    android:background="@drawable/abc_ab_bottom_solid_dark_holo"
+    android:clickable="true">
 
     <Button
+        android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Recording"
-        android:id="@id/button1"
-        android:layout_gravity="center_horizontal|top"
+        android:layout_centerHorizontal="true"
+        android:text="Start Recoding"
         android:onClick="buttonTapped"
         android:clickable="true" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Finish Recording"
         android:id="@+id/button2"
-        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/button1"
+        android:layout_below="@+id/button1"
+        android:layout_marginTop="30dp"
+        android:text="Stop Recording"
         android:onClick="buttonTapped"
         android:clickable="true" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Playing"
         android:id="@+id/button3"
-        android:layout_gravity="left|bottom"
-        android:onClick="buttonTapped"
-        android:clickable="true" />
-
-    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop Playing"
-        android:id="@id/button4"
-        android:layout_gravity="right|bottom"
+        android:layout_alignLeft="@+id/button2"
+        android:layout_alignRight="@+id/button2"
+        android:layout_below="@+id/button2"
+        android:layout_marginTop="99dp"
+        android:clickable="true"
         android:onClick="buttonTapped"
-        android:clickable="true" />
+        android:text="Start Playing" />
 
-</FrameLayout>
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button3"
+        android:layout_alignRight="@+id/button3"
+        android:layout_below="@+id/button3"
+        android:layout_marginTop="35dp"
+        android:clickable="true"
+        android:onClick="buttonTapped"
+        android:text="Stop Playing"
+        android:visibility="visible" />
+
+</RelativeLayout>
