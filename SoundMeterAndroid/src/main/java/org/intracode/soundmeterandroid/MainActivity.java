@@ -1,72 +1,59 @@
-package org.intracode.soundmeterandroid;
+package com.example.soundmeterandroid;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
+
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
-
-import android.widget.LinearLayout;
-import android.os.Bundle;
+import android.widget.TextView;
 import android.os.Environment;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.content.Context;
-import android.util.Log;
 import android.media.MediaRecorder;
-import android.media.MediaPlayer;
-
 import java.io.File;
 import java.io.IOException;
+import java.lang.Math;
 
 
 import android.app.Activity;
 
 public class MainActivity extends Activity {
-    private MediaPlayer mediaPlayer;
     private MediaRecorder recorder;
     private String OUTPUT_FILE;
-
+    double n=0;
+    double cos=0;
+    
+    TextView nameField;
+    Button button3, button1, button2;
+    
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        button3 = (Button) findViewById(R.id.button3);
+        button2 = (Button) findViewById(R.id.button2);
+        button1 = (Button) findViewById(R.id.button1);
+        nameField = (TextView) findViewById(R.id.tekst);
+        
         OUTPUT_FILE=Environment.getExternalStorageDirectory()+"/audiorecorder.3gpp";
     }
     public void buttonTapped(View view){
         switch(view.getId()){
             case R.id.button1:
                 try {
-                    beginRecording();
+                	beginRecording();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
                 break;
             case R.id.button2:
                 try {
-                    stopRecording();
+                	stopRecording();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
                 break;
             case R.id.button3:
                 try {
-                    playRecording();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                break;
-            case R.id.button4:
-                try {
-                    stopPlaying();
+                	nameField.setText("Sound pressure: " + String.valueOf((int) cos) 
+                			+ " dB");
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -74,7 +61,9 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void beginRecording() throws IOException {
+    
+	
+	private void beginRecording() throws IOException {
         ditchMediaRecorder();
         File outFile = new File(OUTPUT_FILE);
 
@@ -91,6 +80,7 @@ public class MainActivity extends Activity {
 
         recorder.prepare();
         recorder.start();
+        cos=recorder.getMaxAmplitude();
     }
 
     private void ditchMediaRecorder() {
@@ -103,37 +93,30 @@ public class MainActivity extends Activity {
     private void stopRecording() {
         if (recorder != null)
         {
-            recorder.stop();
+        	n=(recorder.getMaxAmplitude()*2)/1000;
+        	cos = (20 * Math.log10(n / 0.00002))/3;
+        	recorder.stop();
         }
     }
-
-    private void playRecording() throws IOException {
-        ditchMediaPlayer();
-        mediaPlayer=new MediaPlayer();
-        mediaPlayer.setDataSource(OUTPUT_FILE);
-        mediaPlayer.prepare();
-        mediaPlayer.start();
-    }
-
-    private void ditchMediaPlayer() {
-        if (mediaPlayer != null)
-        {
-            try
-            {
-                mediaPlayer.release();
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void stopPlaying() {
-        if (mediaPlayer != null)
-        {
-            mediaPlayer.stop();
-        }
-    }
+    
+    
+    /*public double getNoiseLevel() 
+	{
+	    //Log.d("SPLService", "getNoiseLevel() ");
+	    double x = cos;
+	    double x2 = x;
+	    Log.d("SPLService", "x="+x);
+	    double db = (20 * Math.log10(x2 / 0.1));
+	    //Log.d("SPLService", "db="+db);
+	    if(db>0)
+	    {
+	        cos=db;
+	    	return cos;
+	    }
+	    else
+	    {
+	        return 0;
+	    }
+	}*/
 
 }
